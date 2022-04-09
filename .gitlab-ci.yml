@@ -1,0 +1,32 @@
+varibles:
+  API_URL: ""
+  AMMO_URL: ""
+  NOTIFICATION_CHANNEL: ""
+  K6_HOSTNAME: ""
+  K6_NOTIFICATION_URL: ""
+  DESCRIPTION : "load testing $API_URL\ Metrics: <link to grafana>"
+  JIRATICKET: ""
+  PROMETHEUS: ""
+  
+stages:
+    - loadtest-local
+
+loadtest-local:
+  image:
+    name: name your image
+    entrypoint: ['']
+  stage: loadtest-local
+  script:
+    - echo "Download ammo from S3..."
+    - wget "$AMMO_URL" - 0 query_ammo.json
+    - echo "excuting local k6 in k6 container..."
+    - k6yaml run script_some_data_by_id.js
+     --address "0.0.0.0:6565"
+     -o output-prometheus-remote
+     -e K6_HOSTNAME="$K6_HOSTNAME"
+     -e CHANNEL="$NOTIFICATION_CHANNEL"
+     -e K6_NOTIFICATION_URL = "$K6_NOTIFICATION_URL"
+
+  tags:
+    - prodload
+  when: manual
